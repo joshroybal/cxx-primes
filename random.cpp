@@ -1,27 +1,53 @@
-#include <string>
-#include <cstdlib>
-#include <limits>
+#include <sstream>
+#include <ctime>
+#include <climits>
 #include "random.hpp"
 
-// function returns pseudo-random 0 <= rnd < n
-unsigned random(unsigned n)
+// Random class public interface accessor methods.
+unsigned long long Random::randomNumber()
 {
-	return n*(rand()/double(RAND_MAX));
+    return random_number_();
 }
 
-// function returns random no. with no_digits digits
-unsigned random_digits(unsigned n)
+unsigned long long Random::randomNumber(unsigned long long n)
 {
-	char *string = new char[n+1];
-	// first digit is in range 1 to 9
-	char c = 49+9*rand()/float(RAND_MAX);
-	string[0] = c;
-	// remaining digits are in range 0 to 9
-	for (int i = 1; i < n; i++) {
-		c = 48+10*rand()/float(RAND_MAX);
-		string[i] = c;
-	}
-	// cap string with null
-	string[n] = '\0';
-	return std::stoi(string);
+    return random_number_(n);
+}
+
+unsigned long long Random::randomNumber(unsigned long long lo,
+                                        unsigned long long hi)
+{
+    return random_number_(lo, hi);
+}
+
+// Random class private methods.
+// Drop const guards on all accessing methods because state matters.
+void Random::randomize_()
+{
+    // 64-bit Linear Congruential Generator.
+    // https://nuclear.llnl.gov/CNP/rng/rngman/node4.html
+    if (seed_ == 0) seed_ = time(0);
+    seed_ = 2862933555777941757ULL*seed_+3037000493ULL%ULLONG_MAX;
+}
+
+unsigned long long Random::random_number_()
+{
+    randomize_();
+    return seed_;
+}
+
+// Method returns pseudo-random 0 <= rnd < n.
+// avoid using this one
+unsigned long long Random::random_number_(unsigned long long n)
+{
+    randomize_();
+    return n*(seed_/double(ULLONG_MAX));
+}
+
+// Method returns pseudo-random lo <= rnd <= hi.
+unsigned long long Random::random_number_(unsigned long long lo,
+                                          unsigned long long hi)
+{
+    randomize_();
+    return lo+(seed_)%(hi-lo+1);
 }

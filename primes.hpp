@@ -5,17 +5,17 @@
 
 class Primes {
     public:
-        bool isPrime(unsigned) const;
-        std::vector<unsigned> getPrimes(unsigned) const;
-        unsigned countPrimes(unsigned) const;
-        std::vector<unsigned> Factorize(unsigned) const;
+        bool isPrime(unsigned long long) const;
+        std::vector<unsigned long long> getPrimes(unsigned long long) const;
+        unsigned long long countPrimes(unsigned long long) const;
+        std::vector<unsigned long long> Factorize(unsigned long long) const;
     private:
-        bool is_prime_(unsigned) const;
-        unsigned count_primes_(unsigned) const;
-        bool* sieve_(unsigned) const;
-        std::vector<unsigned> segmented_sieve_(unsigned) const;
-        unsigned smallest_divisor_(unsigned) const;
-        std::vector<unsigned> factorize_(unsigned) const;
+        bool is_prime_(unsigned long long) const;
+        unsigned long long count_primes_(unsigned long long) const;
+        bool* sieve_(unsigned long long) const;
+        std::vector<unsigned long long> segmented_sieve_(unsigned long long) const;
+        unsigned long long smallest_divisor_(unsigned long long) const;
+        std::vector<unsigned long long> factorize_(unsigned long long) const;
 };
 
 #endif

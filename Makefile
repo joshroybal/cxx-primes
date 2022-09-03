@@ -1,19 +1,19 @@
-CXX = cl.exe
-CFLAGS = /EHsc /O2
-LFLAGS =
+CXX = c++
+CFLAGS = -std=c++11 -pedantic-errors -Werror -O2
+LFLAGS = -static -s
 
-primes.exe: main.obj primes.obj random.obj
-	$(CXX) /Fe$@ main.obj primes.obj random.obj $(LFLAGS)
+primes: main.o primes.o random.o
+	$(CXX) -o $@ $^ $(LFLAGS)
 
-primes.obj: primes.cpp primes.hpp
-	$(CXX) /c primes.cpp $(CFLAGS)
+main.o: main.cpp primes.hpp random.hpp
+	$(CXX) -c $< $(CFLAGS) 
 
-random.obj: random.cpp random.hpp
-	$(CXX) /c random.cpp $(CFLAGS)
+primes.o: primes.cpp primes.hpp
+	$(CXX) -c $< $(CFLAGS)
 
-main.obj: main.cpp primes.hpp random.hpp
-	$(CXX) /c main.cpp $(CFLAGS)
+random.o: random.cpp random.hpp
+	$(CXX) -c $< $(CFLAGS)
 
 .PHONY : clean
 clean:
-	del *.exe *.obj
+	$(RM) primes *.o *~
