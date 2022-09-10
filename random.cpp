@@ -1,53 +1,25 @@
-#include <sstream>
-#include <ctime>
-#include <climits>
+#include <limits>
+#include <cmath>
 #include "random.hpp"
 
-// Random class public interface accessor methods.
-unsigned long long Random::randomNumber()
-{
-    return random_number_();
-}
-
-unsigned long long Random::randomNumber(unsigned long long n)
-{
-    return random_number_(n);
-}
-
-unsigned long long Random::randomNumber(unsigned long long lo,
-                                        unsigned long long hi)
-{
-    return random_number_(lo, hi);
-}
-
 // Random class private methods.
-// Drop const guards on all accessing methods because state matters.
-void Random::randomize_()
+// Drop long long guards on all accessing methods because state matters.
+long long Random::random_long_(long long mp)
 {
-    // 64-bit Linear Congruential Generator.
-    // https://nuclear.llnl.gov/CNP/rng/rngman/node4.html
-    if (seed_ == 0) seed_ = time(0);
-    seed_ = 2862933555777941757ULL*seed_+3037000493ULL%ULLONG_MAX;
-}
-
-unsigned long long Random::random_number_()
-{
-    randomize_();
+    if (mp == 131071)
+        seed_ = (32719*seed_)%mp;
+    else if (mp == 2147483647)
+        seed_ = (48271*seed_)%mp;
+    else if (mp == 2305843009213693951L)
+        seed_ = (437799614237992725UL*seed_)%mp;
     return seed_;
 }
 
-// Method returns pseudo-random 0 <= rnd < n.
-// avoid using this one
-unsigned long long Random::random_number_(unsigned long long n)
+std::vector<long long> Random::random_vector_(long long m, long long n)
 {
-    randomize_();
-    return n*(seed_/double(ULLONG_MAX));
-}
+    std::vector<long long> z(n);
 
-// Method returns pseudo-random lo <= rnd <= hi.
-unsigned long long Random::random_number_(unsigned long long lo,
-                                          unsigned long long hi)
-{
-    randomize_();
-    return lo+(seed_)%(hi-lo+1);
+    for (int i = 0; i < n; ++i)
+        z[i] = random_long_(m);
+    return z;
 }
